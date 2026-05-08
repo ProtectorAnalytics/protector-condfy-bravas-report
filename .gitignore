@@ -1,7 +1,9 @@
 node_modules/
 relatorio-*.xlsx
+relatorios/
 .env
 .env.local
+.env.production
 *.log
 .DS_Store
 /tmp/
