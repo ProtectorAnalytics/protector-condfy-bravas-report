@@ -1,0 +1,44 @@
+name: Relatório Diário Condfy + Bravas
+
+on:
+  schedule:
+    # 7h BRT = 10h UTC
+    - cron: "0 10 * * *"
+  workflow_dispatch: # permite rodar manualmente pelo botão "Run workflow"
+
+jobs:
+  generate-and-send:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run pipeline (extract + send)
+        env:
+          CONDFY_EMAIL: ${{ secrets.CONDFY_EMAIL }}
+          CONDFY_PASSWORD: ${{ secrets.CONDFY_PASSWORD }}
+          CONDFY_LICENSE_ID: ${{ secrets.CONDFY_LICENSE_ID }}
+          BRAVAS_CONTROLLERS: ${{ secrets.BRAVAS_CONTROLLERS }}
+          BRAVAS_USER: ${{ secrets.BRAVAS_USER }}
+          BRAVAS_PASSWORD: ${{ secrets.BRAVAS_PASSWORD }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          REPORT_FROM: ${{ secrets.REPORT_FROM }}
+          REPORT_RECIPIENTS: ${{ secrets.REPORT_RECIPIENTS }}
+          REPORT_CLIENT_NAME: ${{ secrets.REPORT_CLIENT_NAME }}
+        run: node daily.mjs
+
+      - name: Upload XLSX artifact (audit trail)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: relatorio-${{ github.run_number }}
+          path: relatorio-*.xlsx
+          retention-days: 30

@@ -1,0 +1,8 @@
+node_modules/
+relatorio-*.xlsx
+.env
+.env.local
+*.log
+.DS_Store
+/tmp/
+~$*.xlsx
