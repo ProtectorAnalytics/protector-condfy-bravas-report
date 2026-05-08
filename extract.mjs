@@ -698,7 +698,7 @@ async function main() {
   console.error(`\n=== AMOSTRA (5 primeiras linhas) ===`);
   console.table(linhas.slice(0, 5));
 
-  const out = `/Users/glaubervarjao/CondfyBravasReport/relatorio-${Date.now()}.xlsx`;
+  const out = `relatorio-${Date.now()}.xlsx`;
   await gerarXlsx(linhas, out);
   console.error(`\n→ ${out}`);
 }
